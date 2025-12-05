@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace App.Services
 {
@@ -9,7 +10,10 @@ namespace App.Services
     {
         public T? Data { get; set; }
         public List<string>? ErrorMessage { get; set; }
+        [JsonIgnore]
         public HttpStatusCode Status { get; set; }
+
+        [JsonIgnore]
         public bool IsSuccess
         {
             get
@@ -18,6 +22,7 @@ namespace App.Services
             }
 
         }
+        [JsonIgnore]
         public bool IsFail
         {
             get
@@ -26,8 +31,19 @@ namespace App.Services
             }
         }
 
+        [JsonIgnore]
+        public string? UrlAsCreated { get; set; }
+        public static ServiceResult<T> SuccessAsCreated(T data, string urlAsCreated)
+        {
+            return new ServiceResult<T>()
+            {
 
-    
+                Data = data,
+                Status = HttpStatusCode.Created,
+                UrlAsCreated = urlAsCreated
+
+            };
+        }
 
 
         public static ServiceResult<T> Success(T data, HttpStatusCode status=HttpStatusCode.OK) { 
@@ -51,7 +67,9 @@ namespace App.Services
     {
      
         public List<string>? ErrorMessage { get; set; }
+        [JsonIgnore]
         public HttpStatusCode Status { get; set; }
+        [JsonIgnore]
         public bool IsSuccess
         {
             get
@@ -60,6 +78,7 @@ namespace App.Services
             }
 
         }
+        [JsonIgnore]
         public bool IsFail
         {
             get

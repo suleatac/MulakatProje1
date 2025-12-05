@@ -4,6 +4,7 @@ using App.Repositories.UnitofWork;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace App.Services.Products
@@ -50,7 +51,7 @@ namespace App.Services.Products
             await productRepository.AddAsync(newProduct);
             await unitofWork.SaveChangesAsync();
             var response = new CreateProductResponse(newProduct.Id);
-            return ServiceResult<CreateProductResponse>.Success(response);
+            return ServiceResult<CreateProductResponse>.SuccessAsCreated(response,$"api/products/{newProduct.Id}");
         }
 
         public async Task<ServiceResult> UpdateProductAsync(int id, UpdateProductRequest request)
@@ -65,7 +66,7 @@ namespace App.Services.Products
             product.Stock = request.Stock;
             productRepository.Update(product);
             await unitofWork.SaveChangesAsync();
-            return ServiceResult.Success();
+            return ServiceResult.Success(HttpStatusCode.NoContent);
         }
 
         public async Task<ServiceResult> DeleteProductAsync(int id)
@@ -77,7 +78,7 @@ namespace App.Services.Products
             }
             productRepository.Delete(product);
             await unitofWork.SaveChangesAsync();
-            return ServiceResult.Success();
+            return ServiceResult.Success(HttpStatusCode.NoContent);
         }
 
         public async Task<ServiceResult<List<ProductDto>>> GetAllProductsAsync()
